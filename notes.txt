@@ -1,0 +1,2 @@
+- API route to generate random word
+- UI to guess the word
