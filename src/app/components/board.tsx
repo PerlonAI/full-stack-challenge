@@ -11,18 +11,6 @@ import {
 const NUMBER_OF_ROWS = 6;
 const NUMBER_OF_COLUMNS = 5;
 
-const Rows = ({ targetWord }: { targetWord: string }) => {
-  return (
-    <div className="grid grid-cols-5 gap-1.5">
-      {Array(NUMBER_OF_ROWS)
-        .fill(null)
-        .map((_, r) => (
-          <Row key={r} wordToGuess={targetWord} />
-        ))}
-    </div>
-  );
-};
-
 const getTilesState = ({
   targetWord,
   guessedWord,
@@ -31,6 +19,7 @@ const getTilesState = ({
   const guess = guessedWord.toLowerCase();
 
   const letterFrequency: Record<string, number> = {};
+
   for (const letter of target) {
     letterFrequency[letter] = (letterFrequency[letter] || 0) + 1;
   }
@@ -56,22 +45,28 @@ const getTilesState = ({
   return result;
 };
 
-const Row = ({ wordToGuess }: { wordToGuess: string }) => {
-  const [guessedWord, setGuessedWord] = useState('');
+const Row = ({
+  wordToGuess,
+  board,
+  rowIndex,
+  onUpdateRow,
+}: {
+  wordToGuess: string;
+  board: Board;
+  rowIndex: number;
+  onUpdateRow: (rowIndex: number, columnIndex: number, letter: string) => void;
+}) => {
+  const guessedWord = board[rowIndex].map((row) => row.value).join('');
   const tileRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const hasEnteredWord = guessedWord.length === NUMBER_OF_COLUMNS;
 
   const tilesState = getTilesState({ targetWord: wordToGuess, guessedWord });
 
-  const onLetterChange = (value: string, index: number) => {
-    setGuessedWord((prevState) => {
-      const newState = prevState.split('');
-      newState[index] = value;
-      return newState.join('');
-    });
+  const onLetterChange = (value: string, columnIndex: number) => {
+    onUpdateRow(rowIndex, columnIndex, value);
     if (value.length === 1) {
-      const nextInputElement = tileRefs.current[index + 1];
+      const nextInputElement = tileRefs.current[columnIndex + 1];
       nextInputElement?.focus();
       nextInputElement?.setSelectionRange(1, 1);
       return;
@@ -117,6 +112,11 @@ type TileProps = {
   isInputEnabled: boolean;
   state: TileState;
 };
+
+type Board = {
+  value: string;
+  state: TileState;
+}[][];
 
 type TileState = 'unchecked' | 'present' | 'correct' | 'absent';
 
@@ -164,9 +164,44 @@ const Tile = forwardRef(
 );
 
 export const Board = ({ targetWord }: { targetWord: string }) => {
+  const [board, setBoard] = useState<Board>(
+    Array(NUMBER_OF_ROWS).fill(
+      Array(NUMBER_OF_COLUMNS).fill({
+        value: '',
+        state: '',
+      }),
+    ),
+  );
+
+  console.log(JSON.stringify(board));
+
+  const onUpdateRow = (
+    rowIndex: number,
+    columnIndex: number,
+    letter: string,
+  ) => {
+    setBoard((prevState) => {
+      const newBoard = prevState.map((row) => row.map((tile) => ({ ...tile })));
+
+      newBoard[rowIndex][columnIndex].value = letter;
+
+      return newBoard;
+    });
+  };
+
   return (
     <section className="w-1/2 h-screen mx-auto flex justify-center items-center">
-      <Rows targetWord={targetWord} />
+      <div className="grid grid-cols-5 gap-1.5">
+        {board.map((_, idx) => (
+          <Row
+            key={idx}
+            wordToGuess={targetWord}
+            board={board}
+            rowIndex={idx}
+            onUpdateRow={onUpdateRow}
+          />
+        ))}
+      </div>
     </section>
   );
 };
