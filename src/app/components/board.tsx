@@ -11,32 +11,49 @@ import {
 const NUMBER_OF_ROWS = 6;
 const NUMBER_OF_COLUMNS = 5;
 
-const Rows = ({ wordToGuess }: { wordToGuess: string }) => {
+const Rows = ({ targetWord }: { targetWord: string }) => {
   return (
     <div className="grid grid-cols-5 gap-1.5">
       {Array(NUMBER_OF_ROWS)
         .fill(null)
         .map((_, r) => (
-          <Row key={r} wordToGuess={wordToGuess} />
+          <Row key={r} wordToGuess={targetWord} />
         ))}
     </div>
   );
 };
 
 const getTilesState = ({
-  wordToGuess,
+  targetWord,
   guessedWord,
-}: { wordToGuess: string; guessedWord: string }): TileState[] => {
-  return guessedWord.split('').map((guessedLetter, index) => {
-    const indexInWordToGuess = wordToGuess.indexOf(guessedLetter);
-    if (indexInWordToGuess === -1) {
-      return 'no match';
+}: { targetWord: string; guessedWord: string }): TileState[] => {
+  const target = targetWord.toLowerCase();
+  const guess = guessedWord.toLowerCase();
+
+  const letterFrequency: Record<string, number> = {};
+  for (const letter of target) {
+    letterFrequency[letter] = (letterFrequency[letter] || 0) + 1;
+  }
+
+  const result: TileState[] = Array(guess.length).fill('absent');
+
+  for (let i = 0; i < guess.length; i++) {
+    if (guess[i] === target[i]) {
+      result[i] = 'correct';
+      letterFrequency[guess[i]]--;
     }
-    if (indexInWordToGuess === index) {
-      return 'full match';
+  }
+
+  for (let i = 0; i < guess.length; i++) {
+    if (result[i] === 'correct') continue;
+
+    if (letterFrequency[guess[i]] > 0) {
+      result[i] = 'present';
+      letterFrequency[guess[i]]--;
     }
-    return 'partial match';
-  });
+  }
+
+  return result;
 };
 
 const Row = ({ wordToGuess }: { wordToGuess: string }) => {
@@ -45,7 +62,7 @@ const Row = ({ wordToGuess }: { wordToGuess: string }) => {
 
   const hasEnteredWord = guessedWord.length === NUMBER_OF_COLUMNS;
 
-  const tilesState = getTilesState({ wordToGuess, guessedWord });
+  const tilesState = getTilesState({ targetWord: wordToGuess, guessedWord });
 
   const onLetterChange = (value: string, index: number) => {
     setGuessedWord((prevState) => {
@@ -101,13 +118,13 @@ type TileProps = {
   state: TileState;
 };
 
-type TileState = 'unchecked' | 'partial match' | 'full match' | 'no match';
+type TileState = 'unchecked' | 'present' | 'correct' | 'absent';
 
 const stateToBackgroundColor: Record<TileState, string> = {
   unchecked: 'bg-transparent',
-  'partial match': 'bg-[#c9b458]',
-  'full match': 'bg-[#6aaa64]',
-  'no match': 'bg-[#787c7e]',
+  present: 'bg-[#c9b458]',
+  correct: 'bg-[#6aaa64]',
+  absent: 'bg-[#787c7e]',
 };
 
 const Tile = forwardRef(
@@ -146,10 +163,10 @@ const Tile = forwardRef(
   },
 );
 
-export const Board = ({ wordToGuess }: { wordToGuess: string }) => {
+export const Board = ({ targetWord }: { targetWord: string }) => {
   return (
     <section className="w-1/2 h-screen mx-auto flex justify-center items-center">
-      <Rows wordToGuess={wordToGuess} />
+      <Rows targetWord={targetWord} />
     </section>
   );
 };
