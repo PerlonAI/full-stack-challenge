@@ -47,8 +47,6 @@ const Row = ({ wordToGuess }: { wordToGuess: string }) => {
 
   const tilesState = getTilesState({ wordToGuess, guessedWord });
 
-  console.log(guessedWord);
-
   const onLetterChange = (value: string, index: number) => {
     setGuessedWord((prevState) => {
       const newState = prevState.split('');

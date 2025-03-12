@@ -12,7 +12,7 @@ async function getWords<T>() {
 }
 
 export default async function Home() {
-  const { words } = await getWords<{ words: string[] }>();
+  const words = await getWords<string[]>();
 
   console.log('words', words);
 
