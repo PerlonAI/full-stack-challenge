@@ -1,4 +1,4 @@
-import { Board } from '@/app/components/board';
+import { Board } from '@/app/components/Board';
 import { getWordToGuess } from '@/app/utils/getWordToGuess';
 
 async function getWords<T>() {
@@ -15,8 +15,6 @@ export default async function Home() {
   const words = await getWords<string[]>();
 
   const wordToGuess = getWordToGuess(words);
-
-  console.log('word to guess', wordToGuess);
 
   return (
     <main className="w-full h-screen bg-[#121213]">
