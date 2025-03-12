@@ -1,7 +1,7 @@
 import { Board } from '@/app/components/Board';
-import { wordResponseSchema } from '@/app/schemas/letter';
+import { wordResponseSchema } from '@/app/schemas/word';
 import { getTargetWord } from '@/app/utils/getTargetWord';
-import { env } from '@/app/environment/client';
+import { env } from '@/app/environment/server';
 
 async function getWords() {
   const res = await fetch(env.WORDS_API_URL);
@@ -19,8 +19,6 @@ export default async function Home() {
   const words = await getWords();
 
   const targetWord = getTargetWord(words);
-
-  console.log('targetWord', targetWord);
 
   return (
     <main className="w-full h-screen bg-[#121213]">

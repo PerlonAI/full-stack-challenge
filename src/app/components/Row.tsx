@@ -21,8 +21,9 @@ export const Row = ({
 
   const hasEnteredWord = guessedWord.length === NUMBER_OF_COLUMNS;
 
-  const onLetterChange = (value: string, columnIndex: number) => {
+  const onLetterChange = async (value: string, columnIndex: number) => {
     onUpdateRow(rowIndex, columnIndex, value);
+
     if (value.length === 1) {
       const nextInputElement = tileRefs.current[columnIndex + 1];
       nextInputElement?.focus();
@@ -35,7 +36,6 @@ export const Row = ({
     keyDown: KeyboardEvent<HTMLInputElement>,
     index: number,
   ) => {
-    console.log('fireddd');
     if (keyDown.key !== 'Backspace') {
       return;
     }

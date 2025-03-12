@@ -1,4 +1,4 @@
-import { letterSchema } from '@/app/schemas/letter';
+import { letterSchema } from '@/app/schemas/word';
 import type { BoardState, TileState } from '@/app/types/board';
 import { type ForwardedRef, type KeyboardEvent, forwardRef } from 'react';
 

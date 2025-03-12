@@ -1,12 +1,11 @@
 import { z } from 'zod';
 
-const envSchema = z.object({
-    WORDS_API_URL: z.string().url(),
-    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+const clientEnvSchema = z.object({
+    NEXT_PUBLIC_VALIDATE_WORD_API_URL: z.string().url().default('http://localhost:3000/api/words'),
 });
 
-const validateEnv = () => {
-    const parsed = envSchema.safeParse(process.env);
+const validateClientEnv = () => {
+    const parsed = clientEnvSchema.safeParse(process.env);
 
     if (!parsed.success) {
         console.error('❌ Invalid environment variables:', parsed.error.flatten().fieldErrors);
@@ -16,4 +15,5 @@ const validateEnv = () => {
     return parsed.data;
 }
 
-export const env = validateEnv();
+
+export const env = validateClientEnv();
