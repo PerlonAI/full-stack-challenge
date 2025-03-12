@@ -1,24 +1,30 @@
 import { Board } from '@/app/components/Board';
-import { getWordToGuess } from '@/app/utils/getWordToGuess';
+import { wordResponseSchema } from '@/app/schemas/letter';
+import { getTargetWord } from '@/app/utils/getTargetWord';
+import { env } from '@/app/environment/client';
 
-async function getWords<T>() {
-  const res = await fetch('http://localhost:3000/api/words');
+async function getWords() {
+  const res = await fetch(env.WORDS_API_URL);
 
   if (!res.ok) {
     throw new Error('Failed to fetch data');
   }
 
-  return (await res.json()) as T;
+  const data = await res.json();
+
+  return wordResponseSchema.parse(data);
 }
 
 export default async function Home() {
-  const words = await getWords<string[]>();
+  const words = await getWords();
 
-  const wordToGuess = getWordToGuess(words);
+  const targetWord = getTargetWord(words);
+
+  console.log('targetWord', targetWord);
 
   return (
     <main className="w-full h-screen bg-[#121213]">
-      <Board targetWord={wordToGuess} />
+      <Board targetWord={targetWord} />
     </main>
   );
 }

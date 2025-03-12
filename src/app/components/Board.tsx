@@ -39,11 +39,14 @@ const getTilesState = ({
   return result;
 };
 
-const getIsRowEnabled = (board: BoardState, rowIndex: number) => {
+const getIsRowEnabled = (board: BoardState, rowIndex: number, targetWord: string) => {
   if (rowIndex === 0) {
     return true;
   }
-  return board[rowIndex - 1].map((row) => row.value).join('').length === 5;
+
+  const previousRowWord = board[rowIndex - 1].map(({ value }) => value.toLowerCase()).join('');
+
+  return previousRowWord.length === 5 && previousRowWord !== targetWord.toLowerCase();
 };
 
 export const Board = ({ targetWord }: { targetWord: string }) => {
@@ -92,7 +95,7 @@ export const Board = ({ targetWord }: { targetWord: string }) => {
             wordToGuess={targetWord}
             rowData={rowData}
             rowIndex={idx}
-            isRowEnabled={getIsRowEnabled(board, idx)}
+            isRowEnabled={getIsRowEnabled(board, idx, targetWord)}
             onUpdateRow={onUpdateLetter}
           />
         ))}
