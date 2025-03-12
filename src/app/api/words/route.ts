@@ -1,17 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { words } from '../../../../words.json';
 
 type ResponseData = {
-    words: string[]
-}
+  words: string[];
+};
 
 export default function handler(
-    req: NextApiRequest,
-    res: NextApiResponse<ResponseData>
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseData>,
 ) {
-    res.status(200).json({ words });
+  res.status(200).json({ words });
 }
 
 export async function GET() {
-    return Response.json(words);
+  return Response.json(words);
 }
