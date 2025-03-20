@@ -1,3 +1,5 @@
+import Wordle from "@/app/wordle";
+
 export default async function Home() {
-  return <main></main>;
+  return <main><Wordle /></main>;
 }
