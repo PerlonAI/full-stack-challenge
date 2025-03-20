@@ -70,7 +70,6 @@ const Wordle: React.FC = () => {
 							colIndex={j}
 							onChange={onChange}
 							onKeyDown={handleKeyDown}
-							disabled={i !== attemptCount || gameStatus !== "playing"}
 							inputRef={inputRefs.current[i][j]}
 						/>
 					))}
@@ -81,12 +80,14 @@ const Wordle: React.FC = () => {
 				<Button
 					onClick={onSubmit}
 					disabled={!isRowComplete() || gameStatus !== "playing"}
+					variant="primary"
 				>
 					Enter
 				</Button>
 
 				<Button
 					onClick={handleReset}
+					variant="secondary"
 				>
 					Reset
 				</Button>

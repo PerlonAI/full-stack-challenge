@@ -8,7 +8,6 @@ interface BoxProps {
   colIndex: number;
   onChange: (rowIndex: number, colIndex: number, value: string) => void;
   onKeyDown: (rowIndex: number, colIndex: number, e: React.KeyboardEvent) => void;
-  disabled: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
 }
 
@@ -17,8 +16,7 @@ const Box: React.FC<BoxProps> = ({
   rowIndex, 
   colIndex, 
   onChange, 
-  onKeyDown, 
-  disabled,
+  onKeyDown,
   inputRef
 }) => {
   return (
@@ -28,7 +26,6 @@ const Box: React.FC<BoxProps> = ({
       onChange={(e) => onChange(rowIndex, colIndex, e.target.value)}
       onKeyDown={(e) => onKeyDown(rowIndex, colIndex, e)}
       maxLength={1}
-      disabled={disabled}
       style={{ 
         backgroundColor: value.color,
         color: value.color === "white" ? "black" : "white"
