@@ -1,14 +1,8 @@
-import {join} from 'node:path';
-import {Result,ok,err} from 'neverthrow';
-import {z } from 'zod';
+import { join } from 'node:path';
+import { Result, ok, err } from 'neverthrow';
 import * as fs from 'node:fs';
-// import 'server-only';
+import { Words, wordsSchema } from './types';
 
-const wordsSchema = z.object({
-  words: z.array(z.string()),
-});
-
-type Words = z.infer<typeof wordsSchema>;
 
 /**
 * load words from the words.txt file
@@ -28,6 +22,7 @@ interface GetRandomWords {
   words: string[];
   count?: number;
 }
+
 export async function getRandomWords(opts:GetRandomWords): Promise<string[]> {
   const {
     words,
