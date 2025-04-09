@@ -1,17 +1,19 @@
-import type { Word, WordleStatus } from "./types";
+import type { Word, WordleStatusArray } from "./types";
+import { wordleStatusSchemaArray } from "./types";
+import * as v from "valibot";
 
 interface CheckWordleProps {
-  userInput: Word[];
+  userInput: Word;
   answer: Word;
 }
 
 export function checkWordle({
   userInput,
   answer 
-}: CheckWordleProps): WordleStatus[] {
-  const userInputWord = userInput.join("");
+}: CheckWordleProps): WordleStatusArray{
+  const userInputWord = userInput;
   const answerWord = answer;
-  const result: WordleStatus[] = [];
+  const result=[]
   for (let i = 0; i < userInputWord.length; i++) {
     if (userInputWord[i] === answerWord[i]) {
       result.push("correct");
@@ -21,5 +23,5 @@ export function checkWordle({
       result.push("absent");
     }
   }
-  return result;
+  return v.parse(wordleStatusSchemaArray, result);
 }
