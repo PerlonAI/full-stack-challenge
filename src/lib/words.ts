@@ -23,3 +23,23 @@ export async function  getWords(): Promise<Result<Words,Error>> {
   }
   return ok(result.data);
 }
+
+interface GetRandomWords {
+  words: string[];
+  count?: number;
+}
+export async function getRandomWords(opts:GetRandomWords): Promise<string[]> {
+  const {
+    words,
+    count = 1,
+  } = opts;
+
+  const randomWords = [];
+  const wordsCount = words.length;
+  for (let i = 0; i < count; i++) {
+    const randomIndex = Math.floor(Math.random() * wordsCount);
+    randomWords.push(words[randomIndex]);
+  }
+
+  return randomWords;
+}
