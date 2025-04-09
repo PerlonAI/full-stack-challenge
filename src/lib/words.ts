@@ -8,7 +8,7 @@ import { Words, wordsSchema } from './types';
 * load words from the words.txt file
   */
 export async function  getWords(): Promise<Result<Words,Error>> {
-  const wordsPath = join(import.meta.dirname,'./words.json');
+  const wordsPath = join('./words.json');
   const words = await fs.promises.readFile(wordsPath, 'utf-8');
   const parsedWords = JSON.parse(words);
   const result = wordsSchema.safeParse(parsedWords);
