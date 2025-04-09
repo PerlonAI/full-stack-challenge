@@ -1,20 +1,21 @@
-import { z } from "zod";
+import * as v from "valibot";
 
-export const wordSchema = z.string().brand("word");
+export const wordSchema = v.pipe(v.string(), v.brand("word"))
 
-export type Word = z.infer<typeof wordSchema>;
+export type Word = v.InferOutput<typeof wordSchema>;
 
-export const wordsSchema = z.object({
-  words: z.array(wordSchema),
-}).brand("words");
+export const userInputSchema = v.pipe(v.array(wordSchema), v.brand("userInput"))
 
-export type Words = z.infer<typeof wordsSchema>;
+export type UserInput = v.InferOutput<typeof userInputSchema>;
 
-export const wordleStatusSchema = z.enum([
-  "correct",
-  "present",
-  "absent",
-])
+export const wordleStatusSchema = v.pipe( v.union([
+  v.literal("absent"),
+  v.literal("present"),
+  v.literal("correct"),
+]), v.brand("wordleStatus"))
 
-export type WordleStatus = z.infer<typeof wordleStatusSchema>;
+export type WordleStatus = v.InferOutput<typeof wordleStatusSchema>;
+
+export const wordleStatusSchemaArray = v.pipe(v.array(v.array(wordleStatusSchema)), v.brand("wordleStatusArray"))
+export type WordleStatusArray = v.InferOutput<typeof wordleStatusSchemaArray>;
 
