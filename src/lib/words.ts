@@ -2,16 +2,20 @@ import {join} from 'node:path';
 import {Result,ok,err} from 'neverthrow';
 import {z } from 'zod';
 import * as fs from 'node:fs';
-import 'server-only';
+// import 'server-only';
 
-const wordsSchema = z.array(z.string());
+const wordsSchema = z.object({
+  words: z.array(z.string()),
+});
+
+type Words = z.infer<typeof wordsSchema>;
 
 /**
 * load words from the words.txt file
   */
-export function getWords(): Result<string[], Error> {
+export async function  getWords(): Promise<Result<Words,Error>> {
   const wordsPath = join(import.meta.dirname,'./words.json');
-  const words = fs.readFileSync(wordsPath, 'utf-8');
+  const words = await fs.promises.readFile(wordsPath, 'utf-8');
   const parsedWords = JSON.parse(words);
   const result = wordsSchema.safeParse(parsedWords);
   if (!result.success) {
