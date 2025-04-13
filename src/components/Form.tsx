@@ -75,18 +75,17 @@ function InputBox({ status, name, disabled, value }: InputBoxProps) {
 }
 
 interface FormProps {
-	targetWord: Word;
 	ROWS: number;
 	COLS: number;
 }
-export async function Form({ targetWord, ROWS, COLS }: FormProps) {
+export async function Form({ ROWS, COLS }: FormProps) {
 	const { status, userInput } = await getResultFromCookie();
 
 	return (
 		<form
 			action={async (form) => {
 				"use server";
-				await submitInputAction(form, ROWS, COLS, targetWord);
+				await submitInputAction(form, ROWS, COLS);
 			}}
 		>
 			<InputBoxes

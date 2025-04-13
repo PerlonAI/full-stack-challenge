@@ -7,7 +7,7 @@ import {
 	userInputSchema,
 } from "@/lib/types";
 import { checkWordle } from "@/lib/wordle";
-import { getTodaysIndex, getWords } from "@/lib/words";
+import { getTodaysIndex, getTodaysWord, getWords } from "@/lib/words";
 import { err, ok } from "neverthrow";
 import { revalidatePath } from "next/cache";
 import * as v from "valibot";
@@ -28,6 +28,7 @@ function extractUserInputFromFormData(
 		userInput.push(row);
 	}
 	const parsedUserInput = v.safeParse(userInputSchema, userInput);
+	console.log("parsedUserInput", parsedUserInput);
 	if (!parsedUserInput.success) {
 		return err(parsedUserInput.issues);
 	}
@@ -38,7 +39,6 @@ export async function submitInputAction(
 	form: FormData,
 	rows: number,
 	cols: number,
-	answer: Word,
 ) {
 	const userInput = extractUserInputFromFormData(form, rows, cols);
 
@@ -46,12 +46,14 @@ export async function submitInputAction(
 		return err(userInput.error);
 	}
 
+	const words = await getWords().then((w) => w.unwrapOr([] as Word[]));
+	const todaysWord = getTodaysWord(words);
+
 	const status = checkWordle({
 		userInput: userInput.value,
-		answer,
+		answer: todaysWord,
 	});
-
-	const words = await getWords().then((w) => w.unwrapOr([] as Word[]));
+	console.log({ status });
 
 	const userDataResult = v.safeParse(userDataOnCookieSchema, {
 		userInput: userInput.value,
