@@ -50,6 +50,7 @@ interface InputBoxProps {
 }
 function InputBox({ status, name, disabled, value }: InputBoxProps) {
 	/** when we use `disabled` prop, the form will not send the value of this input. therefore we need to use readOnly instead */
+	// TODO: check if five characters are entered
 	return (
 		<input
 			type="text"
