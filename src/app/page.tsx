@@ -15,11 +15,7 @@ export default async function Home() {
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between p-24">
-			<Form
-				targetWord={targetWord[0] as unknown as Word}
-				ROWS={ROWS}
-				COLS={COLS}
-			/>
+			<Form targetWord={targetWord} ROWS={ROWS} COLS={COLS} />
 		</main>
 	);
 }
