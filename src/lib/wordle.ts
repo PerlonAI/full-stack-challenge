@@ -1,9 +1,9 @@
-import type { Word, WordleStatusArray } from "./types";
+import type { Word, WordleStatusArray, UserInput } from "./types";
 import { wordleStatusSchemaArray } from "./types";
 import * as v from "valibot";
 
 interface CheckWordleProps {
-  userInput: Word;
+  userInput: UserInput;
   answer: Word;
 }
 
@@ -13,15 +13,27 @@ export function checkWordle({
 }: CheckWordleProps): WordleStatusArray{
   const userInputWord = userInput;
   const answerWord = answer;
-  const result=[]
+  const result = [];
+
   for (let i = 0; i < userInputWord.length; i++) {
-    if (userInputWord[i] === answerWord[i]) {
-      result.push("correct");
-    } else if (answerWord.includes(userInputWord[i])) {
-      result.push("present");
-    } else {
-      result.push("absent");
+    const row = [];
+    for (let j = 0; j < userInputWord[i].length; j++) {
+      const letter = userInputWord[i][j];
+      if(letter===""){
+        row.push("");
+      } else if (letter === answerWord[j]) {
+        row.push("correct");
+      } else if (answerWord.includes(letter)) {
+        row.push("present");
+      } else {
+        row.push("absent");
+      }
     }
+    result.push(row);
   }
-  return v.parse(wordleStatusSchemaArray, result);
+  const parsedResult = v.safeParse(wordleStatusSchemaArray, result);
+  if (!parsedResult.success) {
+    throw new Error("Invalid result");
+  }
+  return parsedResult.output;
 }

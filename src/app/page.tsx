@@ -1,21 +1,21 @@
-import { InputBoxes } from "@/components/InputBoxes";
-import { checkUserInputAction } from "./action";
+import { Form } from "@/components/Form";
+import { getTodaysWord, getWords } from "@/lib/words";
+import { Word } from "@/lib/types";
 
 const ROWS= 6;
 const COLS= 5;
 
 export default async function Home() {
+  const words = await getWords();
+  if(words.isErr()){
+    return <div> Error loading words </div>
+  }
+
+  const targetWord = getTodaysWord(words.value.words)
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <form action={async(form)=>{
-        'use server'
-        return await checkUserInputAction(form,ROWS,COLS);
-      }} >
-      <InputBoxes rows={ROWS} cols={COLS} />
-        <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-          submit!
-          </button>
-        </form>
+      <Form targetWord={targetWord[0] as unknown as Word} ROWS={ROWS} COLS={COLS} />
     </main>
   )
 }
