@@ -1,11 +1,12 @@
 'use server'
 
 import { setResultOnCookie } from "@/lib/cookies";
-import { userInputSchema, type Word } from "@/lib/types";
+import { userDataOnCookieSchema, userInputSchema, type Word } from "@/lib/types";
 import { checkWordle } from "@/lib/wordle";
 import * as v from "valibot";
 import { ok, err } from 'neverthrow';
 import { revalidatePath } from "next/cache";
+import { getTodaysIndex, getWords } from "@/lib/words";
 
 function extractUserInputFromFormData(form: FormData, rows: number, cols: number){
   const userInput: string[][] = [];
@@ -36,7 +37,18 @@ export async function submitInputAction(form: FormData, rows: number, cols: numb
     answer
   });
 
-  setResultOnCookie(userInput.value, status);
+  const words = await getWords().then(w=>w.unwrapOr([] as Word[]));
+
+  const userDataResult = v.safeParse(userDataOnCookieSchema, {
+    userInput: userInput.value,
+    status,
+    todaysIndex: getTodaysIndex(words),
+  });
+  if (!userDataResult.success) {
+    throw new Error("Invalid user data");
+  }
+  setResultOnCookie(userDataResult.output);
+  
   revalidatePath('/')
 }
 

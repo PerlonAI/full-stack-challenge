@@ -29,3 +29,12 @@ export type WordleStatus = v.InferOutput<typeof wordleStatusSchema>;
 export const wordleStatusSchemaArray = v.pipe(v.array(v.array(wordleStatusSchema)), v.brand("wordleStatusArray"))
 export type WordleStatusArray = v.InferOutput<typeof wordleStatusSchemaArray>;
 
+export const userDataOnCookieSchema = v.pipe(
+  v.object({
+    userInput: userInputSchema,
+    status: wordleStatusSchemaArray,
+    todaysIndex: v.number(),
+  }),
+  v.brand("userDataOnCookie")
+);
+export type UserDataOnCookie = v.InferOutput<typeof userDataOnCookieSchema>;

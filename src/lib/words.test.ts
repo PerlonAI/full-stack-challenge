@@ -7,7 +7,7 @@ test("getWords", async () => {
   if(result.isErr()) {
     throw new Error("result is not ok");
   }
-  expect(result.value.words.length).toBeGreaterThan(0);
+  expect(result.value.length).toBeGreaterThan(0);
 })
 
 test("getTodaysWord", async () => {
@@ -18,7 +18,7 @@ test("getTodaysWord", async () => {
   if(result.isErr()) {
     throw new Error("result is not ok");
   }
-  const word = getTodaysWord(result.value.words);
+  const word = getTodaysWord(result.value);
   expect(word).toEqual('Apple')
   vi.useRealTimers()
 })

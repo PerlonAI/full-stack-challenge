@@ -1,41 +1,38 @@
 import { cookies } from "next/headers";
 import * as v from "valibot";
-import { UserInput, WordleStatusArray, userInputSchema, wordleStatusSchemaArray } from "./types";
+import { userInputSchema, wordleStatusSchemaArray, userDataOnCookieSchema, UserDataOnCookie, Word } from "./types";
+import { getTodaysIndex, getWords } from "./words";
 
-export function setResultOnCookie(userInput: UserInput, status: WordleStatusArray) {
+const COOKIE_NAME = "userDataOnCookie";
+
+export function setResultOnCookie(userData: UserDataOnCookie) {
   const cookieStore = cookies();
-  cookieStore.set('userInput', JSON.stringify(userInput));
-  cookieStore.set('status', JSON.stringify(status));
-}
+  const userDataJson = JSON.stringify(userData);
+  cookieStore.set(COOKIE_NAME, userDataJson)
+ }
 
-export function getResultFromCookie() {
+export async function getResultFromCookie() {
   const cookieStore = cookies();
-  const userInputJson = cookieStore.get('userInput')?.value;
-  const statusJson = cookieStore.get('status')?.value;
-
+  const userDataJson = cookieStore.get(COOKIE_NAME)?.value;
   const emptyData = {
     userInput: v.parse(userInputSchema, []),
     status: v.parse(wordleStatusSchemaArray, []),
   };
-
-  if (!userInputJson || !statusJson) {
+  if (!userDataJson) {
     return emptyData;
   }
-  const _userInput = JSON.parse(userInputJson);
-  const _status = JSON.parse(statusJson);
-
-  const userInputResult = v.safeParse(userInputSchema, _userInput);
-  if(!userInputResult.success){
+  const userData = JSON.parse(userDataJson);
+  const userDataResult = v.safeParse(userDataOnCookieSchema, userData);
+  if (!userDataResult.success) {
     return emptyData;
   }
-
-  const statusResult = v.safeParse(wordleStatusSchemaArray, _status);
-  if(!statusResult.success){
+  const words = await getWords().then(w=>w.unwrapOr([] as Word[]));
+  if(userDataResult.output.todaysIndex !== getTodaysIndex(words)){
     return emptyData;
   }
   return {
-    userInput: userInputResult.output,
-    status: statusResult.output,
-  };
+    userInput: userDataResult.output.userInput,
+    status: userDataResult.output.status,
+  }
 }
 

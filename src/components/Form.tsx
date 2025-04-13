@@ -61,13 +61,12 @@ interface FormProps {
   ROWS: number;
   COLS: number;
 }
-export function Form({
+export async function Form({
   targetWord,
   ROWS,
   COLS,
 }: FormProps) {
-  const { userInput, status } = getResultFromCookie()
-  console.log({ userInput, status })
+  const { status, userInput } = await getResultFromCookie()
 
   return (
     <form action={async(form)=>{
@@ -80,4 +79,4 @@ export function Form({
       </button>
     </form>
   )
-}
+  }

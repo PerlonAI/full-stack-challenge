@@ -11,7 +11,7 @@ export default async function Home() {
     return <div> Error loading words </div>
   }
 
-  const targetWord = getTodaysWord(words.value.words)
+  const targetWord = getTodaysWord(words.value);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
