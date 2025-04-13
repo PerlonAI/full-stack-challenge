@@ -60,6 +60,7 @@ function InputBox({ status, name, disabled, value}: InputBoxProps) {
       name={name}
       maxLength={1}
       defaultValue={value}
+      pattern="[A-Za-z]"
       className={clsx(
         "w-12 h-12 text-center border rounded focus:outline-none focus:ring-2 focus:ring-blue-500",
         {
