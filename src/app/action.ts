@@ -14,6 +14,7 @@ function extractUserInputFromFormData(form: FormData, rows: number, cols: number
     const row: string[] = [];
     for (let j = 0; j < cols; j++) {
       const value = form.get(`userInput[${i}][${j}]`) as string;
+      console.log(value)
       row.push(value);
     }
     userInput.push(row);
