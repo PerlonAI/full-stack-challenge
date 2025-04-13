@@ -9,6 +9,7 @@
 		"lint": "biome check .",
 		"format": "biome check --write .",
 		"test": "vitest",
+		"typecheck": "tsc --noEmit",
 		"prepare": "simple-git-hooks"
 	},
 	"dependencies": {
@@ -38,6 +39,7 @@
 		"pre-commit": "bun lint-staged"
 	},
 	"lint-staged": {
-		"*": ["biome check --write --no-errors-on-unmatched "]
+		"*": ["biome check --write --no-errors-on-unmatched "],
+		"*.{js,jsx,ts,tsx}": ["pnpm typecheck"]
 	}
 }
