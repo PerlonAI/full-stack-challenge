@@ -66,7 +66,6 @@ function InputBox({ status, name, disabled, value }: InputBoxProps) {
 					"bg-gray-200": status === "absent",
 					"bg-green-500": status === "correct",
 					"bg-yellow-500": status === "present",
-					"bg-neutral-100": disabled,
 				},
 				disabled && "cursor-not-allowed",
 			)}
