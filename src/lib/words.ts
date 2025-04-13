@@ -1,40 +1,32 @@
 import { join } from 'node:path';
 import { Result, ok, err } from 'neverthrow';
 import * as fs from 'node:fs';
-import { Words, wordsSchema } from './types';
+import { Word, wordSchema, WordsFile, wordsFileSchema  } from './types';
+import * as v from 'valibot';
 
 
 /**
 * load words from the words.txt file
   */
-export async function  getWords(): Promise<Result<Words,Error>> {
+export async function  getWords(): Promise<Result<WordsFile, Error>> {
   const wordsPath = join('./words.json');
   const words = await fs.promises.readFile(wordsPath, 'utf-8');
   const parsedWords = JSON.parse(words);
-  const result = wordsSchema.safeParse(parsedWords);
+  const result = v.safeParse(wordsFileSchema, parsedWords);
   if (!result.success) {
     return err(new Error('Invalid words file'));
   }
-  return ok(result.data);
+  return ok(result.output);
 }
 
-interface GetRandomWords {
-  words: string[];
-  count?: number;
-}
 
-export async function getRandomWords(opts:GetRandomWords): Promise<string[]> {
-  const {
-    words,
-    count = 1,
-  } = opts;
+/**
+* get today's word
+*/
+export function getTodaysWord(words: string[]): string {
+  const today = new Date();
+  const date = today.getDate() - 1;
+  const todaysIndex = date % words.length;
 
-  const randomWords = [];
-  const wordsCount = words.length;
-  for (let i = 0; i < count; i++) {
-    const randomIndex = Math.floor(Math.random() * wordsCount);
-    randomWords.push(words[randomIndex]);
-  }
-
-  return randomWords;
+  return words[todaysIndex]
 }
